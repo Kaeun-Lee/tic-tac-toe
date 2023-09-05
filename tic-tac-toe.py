@@ -40,22 +40,42 @@ print_game_board()
 # 한 플레이어가 랜덤으로 정수를 선택하고 그 자리에 O나 X가 없으면 자신의 수를 둔다.
 
 game_board_position = {
-    "1": (0, 0),
-    "2": (0, 1),
-    "3": (0, 2),
-    "4": (1, 0),
-    "5": (1, 1),
-    "6": (1, 2),
-    "7": (2, 0),
-    "8": (2, 1),
-    "9": (2, 2),
+    1: (0, 0),
+    2: (0, 1),
+    3: (0, 2),
+    4: (1, 0),
+    5: (1, 1),
+    6: (1, 2),
+    7: (2, 0),
+    8: (2, 1),
+    9: (2, 2),
 }
 
 computer_symbol = "O"
 player1_symbol = "X"
 
-board_position = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-random_moves = random.sample(board_position, len(board_position))
+board_position = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+random.shuffle(board_position)
+
+victory_rules = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+    [1, 4, 7],
+    [2, 5, 8],
+    [3, 6, 9],
+    [1, 5, 9],
+    [3, 5, 7],
+]
+
+
+def is_finished(symbol, move):
+    for rule in victory_rules:
+        if move in rule:
+            rule[rule.index(move)] = symbol
+        if rule.count(symbol) == 3:
+            return True
+    return False
 
 
 def apply_move(player, symbol, move):
@@ -65,21 +85,29 @@ def apply_move(player, symbol, move):
     x, y = game_board_position[move]
     game_board[x][y] = symbol
 
+    return is_finished(symbol, move)
+
 
 def play_game():
-    for idx, move in enumerate(random_moves):
+    for idx, move in enumerate(board_position):
         if idx % 2:
-            apply_move("player1", player1_symbol, move)
+            if apply_move("player1", player1_symbol, move):
+                print_game_board()
+                print("축하합니다!!! player1님이 이겼습니다.")
+                break
         else:
-            apply_move("computer", computer_symbol, move)
+            if apply_move("computer", computer_symbol, move):
+                print_game_board()
+                print("축하합니다!!! computer님이 이겼습니다.")
+                break
         print_game_board()
+    else:
+        print("비겼습니다. 게임을 다시 시작해 보세요.")
 
 
 play_game()
 
 
-# print("축하합니다!! computer님이 이겼습니다!\n")
-# print("비겼습니다. 게임을 다시 시작해 보세요.")
 # print("게임을 다시 하려면 '다시 시작'을 입력해 주세요.\n")
 
 # print("게임을 종료하시겠습니까? (y/n)")
