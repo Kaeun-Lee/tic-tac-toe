@@ -1,4 +1,5 @@
 import random
+from collections import deque
 
 print("#" * 60)
 print(f"{'Tic Tac Toe 게임에 오신 걸 환영합니다!':^50}")
@@ -26,6 +27,7 @@ for _ in range(3):
 
 
 def print_game_board():
+    """Print the current state of the game board."""
     print("<Tic Tac Toe Game Board>")
     for board_row in game_board:
         for j in board_row:
@@ -36,8 +38,6 @@ def print_game_board():
 
 print_game_board()
 
-# 사용자 입력 없이 랜덤하게 고른 위치에 O, X 수를 두고 결과를 출력한다.
-# 한 플레이어가 랜덤으로 정수를 선택하고 그 자리에 O나 X가 없으면 자신의 수를 둔다.
 
 game_board_position = {
     1: (0, 0),
@@ -51,10 +51,11 @@ game_board_position = {
     9: (2, 2),
 }
 
+symbols = {"O": 0, "X": -1}
 computer_symbol = "O"
 player1_symbol = "X"
 
-board_position = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+board_position = deque([1, 2, 3, 4, 5, 6, 7, 8, 9])
 random.shuffle(board_position)
 
 victory_rules = [
@@ -69,47 +70,116 @@ victory_rules = [
 ]
 
 
-def is_finished(symbol, move):
+def is_finished(symbol: str, move: int) -> bool:
+    """
+    Check if the game has ended based on the latest move.
+
+    Args:
+        symbol: The symbol that was just played. ('O' or 'X')
+        move: The position that was just selected. (1 ~ 9)
+
+    Returns:
+        bool: True if the game is finished (i.e., resulted in a win), otherwise False
+    """
     for rule in victory_rules:
         if move in rule:
-            rule[rule.index(move)] = symbol
-        if rule.count(symbol) == 3:
+            rule[rule.index(move)] = symbols[symbol]
+        # current player's win, game over
+        if rule.count(symbols[symbol]) == 3:
             return True
     return False
 
 
-def apply_move(player, symbol, move):
+def execute_computer_turn(player: str, symbol: str) -> bool:
+    """
+    Executes a turn for computer.
+
+    Args:
+        player: The name of the player. (in this case 'computer')
+        symbol: The symbol that represents this player on the game board. ('O' or 'X')
+
+    Returns:
+        bool: True if the move has finished the game (i.e., resulted in a win), otherwise False
+    """
     print(f"{player}님 ({symbol})을 놓을 위치를 선택해 주세요.")
+
+    move = board_position.popleft()
     print(f"{player}님이 선택한 위치는 {move}입니다.\n")
 
     x, y = game_board_position[move]
     game_board[x][y] = symbol
 
+    # check game over
     return is_finished(symbol, move)
 
 
-def play_game():
-    for idx, move in enumerate(board_position):
-        if idx % 2:
-            if apply_move("player1", player1_symbol, move):
-                print_game_board()
-                print("축하합니다!!! player1님이 이겼습니다.")
-                break
+def execute_player1_turn(player: str, symbol: str) -> bool:
+    """
+    Executes a turn for player1.
+
+    Args:
+        player: The name of the player. (in this case 'player1')
+        symbol: The symbol that represents this player on the game board. ('O' or 'X')
+
+    Returns:
+        bool: True if the move has finished the game (i.e., resulted in a win), otherwise False
+    """
+    while True:
+        try:
+            move = int(input(f"{player}님 ({symbol})을 놓을 위치를 선택해 주세요 : "))
+        except ValueError:
+            # handle non-integer input
+            print("잘못된 값을 입력했습니다. 위치를 정수로 입력해 주세요.\n")
         else:
-            if apply_move("computer", computer_symbol, move):
-                print_game_board()
-                print("축하합니다!!! computer님이 이겼습니다.")
-                break
+            # confirm player's choice
+            if move in board_position and move in range(1, 10):
+                print(f"{player}님이 선택한 위치는 {move}입니다.\n")
+
+                x, y = game_board_position[move]
+                game_board[x][y] = symbol
+
+                # prevent duplicate moves
+                board_position.remove(move)
+
+                # check game over
+                return is_finished(symbol, move)
+
+            else:
+                print("이미 수가 놓인 위치를 선택했거나, 1 ~ 9 값을 넘어갔습니다.")
+                print("위치를 다시 선택해 주세요.\n")
+
+
+def play_game() -> None:
+    """Run a game between a computer and a player."""
+    while True:
+        if board_position and execute_computer_turn("computer", computer_symbol):
+            # computer win
+            print_game_board()
+            print("축하합니다!!! computer님이 이겼습니다.")
+            break
+
+        # computer does not win. print gameboard for player1's reference.
         print_game_board()
-    else:
-        print("비겼습니다. 게임을 다시 시작해 보세요.")
+
+        if board_position and execute_player1_turn("player1", player1_symbol):
+            # player1 win
+            print_game_board()
+            print("축하합니다!!! player1님이 이겼습니다.")
+            break
+
+        # player1 does not win. print gameboard for computer's reference.
+        print_game_board()
+
+        if not board_position:
+            # board is full, draw
+            print("비겼습니다. 게임을 다시 시작해 보세요.")
+            break
 
 
 play_game()
 
 
 # print("게임을 다시 하려면 '다시 시작'을 입력해 주세요.\n")
-
 # print("게임을 종료하시겠습니까? (y/n)")
 # print("게임을 이어서 하려면 '이어서 하기'를 입력해 주세요.\n")
 # print(f"{' Tic Tac Toe 게임을 종료합니다. ':*^52}\n")
