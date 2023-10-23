@@ -1,5 +1,6 @@
 import random
-from collections import deque
+
+from player import Computer, Human
 
 print("#" * 60)
 print(f"{'Tic Tac Toe 게임에 오신 걸 환영합니다!':^50}")
@@ -68,18 +69,6 @@ def print_game_board(game_board: list[list[int | str]]) -> None:
     print()
 
 
-def setup_computer_moves() -> deque[int]:
-    """
-    Generate a randomized deque of moves (1-9).
-
-    Returns:
-        randomized_moves: A deque of shuffled moves.
-    """
-    randomized_moves = deque([1, 2, 3, 4, 5, 6, 7, 8, 9])
-    random.shuffle(randomized_moves)
-    return randomized_moves
-
-
 def setup_players() -> tuple[str, str]:
     """
     Randomly determine the order of play between two players.
@@ -126,58 +115,6 @@ def is_finished(victory_rules: list[list[int | str]], move: int, symbol: str) ->
         if rule.count(symbol) == 3:
             return True
     return False
-
-
-def select_move_computer(player: str, symbol: str, randomized_moves: deque[int]) -> int:
-    """
-    Automatically select the move for a computer player.
-
-    Args:
-        player: The name of player.
-        symbol: The symbol that represents this player in the game ('O' or 'X').
-        randomized_moves: A deque of shuffled moves.
-
-    Returns:
-        int: The board position that was just selected (1 ~ 9).
-    """
-    print(f"{player}님 ({symbol})을 놓을 위치를 선택해 주세요.")
-
-    # dequeue the next available position
-    move = randomized_moves.popleft()
-    print(f"{player}님이 선택한 위치는 {move}입니다.\n")
-    return move
-
-
-def input_move_player(player: str, symbol: str, randomized_moves: deque[int]) -> int:
-    """
-    Prompt a human player to select their move.
-
-    Args:
-        player: The name of player.
-        symbol: The symbol that represents this player in the game ('O' or 'X').
-        randomized_moves: A deque of shuffled moves.
-
-    Returns:
-        int: The board position that was just selected (1 ~ 9).
-    """
-    while True:
-        try:
-            move = int(input(f"{player}님 ({symbol})을 놓을 위치를 선택해 주세요 : "))
-        except ValueError:
-            # handle non-integer input
-            print("잘못된 값을 입력했습니다. 위치를 정수로 입력해 주세요.\n")
-        else:
-            # confirm player's choice
-            if move in randomized_moves and move in range(1, 10):
-                print(f"{player}님이 선택한 위치는 {move}입니다.\n")
-
-                # prevent duplicate moves
-                randomized_moves.remove(move)
-                break
-            else:
-                print("이미 수가 놓인 위치를 선택했거나, 1 ~ 9 값을 넘어갔습니다.")
-                print("위치를 다시 선택해 주세요.\n")
-    return move
 
 
 def apply_turn(
@@ -241,22 +178,25 @@ def play_game(
     print(f"첫 번째 플레이어는 {first_player} (O)입니다.")
     print(f"두 번째 플레이어는 {second_player} (X)입니다.\n")
 
+    computer = Computer("computer")
+    player1 = Human("player1")
+
     if first_player == "computer":
-        do_first = select_move_computer
-        do_second = input_move_player
+        do_first = computer.select_move
+        do_second = player1.select_move
     else:
-        do_first = input_move_player
-        do_second = select_move_computer
+        do_first = player1.select_move
+        do_second = computer.select_move
 
     for i in range(9):
         if i % 2 == 0:
             symbol = "O"
             current_player = first_player
-            move = do_first(current_player, symbol, randomized_moves)
+            move = do_first(available_moves)
         else:
             symbol = "X"
             current_player = second_player
-            move = do_second(current_player, symbol, randomized_moves)
+            move = do_second(available_moves)
 
         apply_turn(position_coordinates, game_board, move, symbol)
 
@@ -275,7 +215,7 @@ def play_game(
 # initialize variables and start playing game
 rounds_count = 1
 game_board, position_coordinates, victory_rules = initialize_game()
-randomized_moves = setup_computer_moves()
+available_moves = set(range(1, 10))
 first_player, second_player = setup_players()
 
 first_player, second_player = play_game(rounds_count, first_player, second_player)
@@ -283,7 +223,7 @@ first_player, second_player = play_game(rounds_count, first_player, second_playe
 while restart_game():
     rounds_count += 1
     game_board, position_coordinates, victory_rules = initialize_game()
-    randomized_moves = setup_computer_moves()
+    available_moves = set(range(1, 10))
     first_player, second_player = play_game(rounds_count, first_player, second_player)
 print()
 print(f"{' Tic Tac Toe 게임을 종료합니다. ':*^52}\n")
