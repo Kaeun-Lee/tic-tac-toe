@@ -1,6 +1,7 @@
 import random
+from itertools import cycle
 
-from player import Computer, Human
+from player import Computer, Human, Player
 
 print("#" * 60)
 print(f"{'Tic Tac Toe 게임에 오신 걸 환영합니다!':^50}")
@@ -16,7 +17,7 @@ print(
 print(f"{' Tic Tac Toe 게임을 시작합니다. ':*^52}\n")
 
 
-def initialize_game() -> (
+def prepare_game_environment() -> (
     tuple[list[list[int | str]], dict[int, tuple[int, int]], list[list[int | str]]]
 ):
     """
@@ -69,30 +70,16 @@ def print_game_board(game_board: list[list[int | str]]) -> None:
     print()
 
 
-def setup_players() -> tuple[str, str]:
+def setup_players() -> tuple[Player, Player]:
     """
     Randomly determine the order of play between two players.
 
     Returns:
         tuple: The first and second player in the shuffled order.
     """
-    players = ["computer", "player1"]
+    players = [Human("player1"), Computer("computer")]
     random.shuffle(players)
-
-    first_player = players[0]
-    second_player = players[1]
-    return first_player, second_player
-
-
-def switch_player(first_player: str, second_player: str) -> tuple[str, str]:
-    """
-    Switch the order of two players.
-
-    Returns:
-        tuple: The names of players in reversed order.
-    """
-    first_player, second_player = second_player, first_player
-    return first_player, second_player
+    return players[0], players[1]
 
 
 def is_finished(victory_rules: list[list[int | str]], move: int, symbol: str) -> bool:
@@ -154,49 +141,34 @@ def restart_game() -> bool:
 
 
 def play_game(
-    rounds_count: int, first_player: str, second_player: str
-) -> tuple[str, str]:
+    rounds_count: int,
+    first_player: Player,
+    second_player: Player,
+) -> tuple[Player, Player]:
     """
     Run a game of Tic Tac Toe between two players.
 
     Args:
         rounds_count: The current round number.
-        first_player: The first player's name in this round.
-        second_player: The second player's name in this round.
+        first_player: The first player in this round.
+        second_player: The second player in this round.
     Returns:
-        tuple: The names of the first and second players.
+        tuple: A tuple containing the first and second players.
     """
     print(f'"Round {rounds_count}"\n')
 
     # display initial game board
     print_game_board(game_board)
 
-    # switch player order if not the first round
-    if rounds_count != 1:
-        first_player, second_player = switch_player(first_player, second_player)
+    print(f"첫 번째 플레이어는 {first_player.name} (O)입니다.")
+    print(f"두 번째 플레이어는 {second_player.name} (X)입니다.\n")
 
-    print(f"첫 번째 플레이어는 {first_player} (O)입니다.")
-    print(f"두 번째 플레이어는 {second_player} (X)입니다.\n")
+    available_moves = set(range(1, 10))
+    symbol_player_pairs = cycle([("O", first_player), ("X", second_player)])
 
-    computer = Computer("computer")
-    player1 = Human("player1")
-
-    if first_player == "computer":
-        do_first = computer.select_move
-        do_second = player1.select_move
-    else:
-        do_first = player1.select_move
-        do_second = computer.select_move
-
-    for i in range(9):
-        if i % 2 == 0:
-            symbol = "O"
-            current_player = first_player
-            move = do_first(available_moves)
-        else:
-            symbol = "X"
-            current_player = second_player
-            move = do_second(available_moves)
+    while available_moves:
+        symbol, current_player = next(symbol_player_pairs)
+        move = current_player.select_move(available_moves)
 
         apply_turn(position_coordinates, game_board, move, symbol)
 
@@ -204,7 +176,8 @@ def play_game(
         print_game_board(game_board)
 
         if is_finished(victory_rules, move, symbol):
-            print(f"{current_player}님 축하합니다!!! {current_player}님이 이겼습니다.")
+            print(f"{current_player.name}님 축하합니다!!! {current_player.name}님이 이겼습니다.")
+            print()
             break
     else:
         # board is full, draw game
@@ -214,16 +187,16 @@ def play_game(
 
 # initialize variables and start playing game
 rounds_count = 1
-game_board, position_coordinates, victory_rules = initialize_game()
-available_moves = set(range(1, 10))
 first_player, second_player = setup_players()
 
-first_player, second_player = play_game(rounds_count, first_player, second_player)
-
-while restart_game():
-    rounds_count += 1
-    game_board, position_coordinates, victory_rules = initialize_game()
-    available_moves = set(range(1, 10))
+while True:
+    game_board, position_coordinates, victory_rules = prepare_game_environment()
     first_player, second_player = play_game(rounds_count, first_player, second_player)
+    if restart_game():
+        rounds_count += 1
+        first_player, second_player = second_player, first_player
+    else:
+        break
+
 print()
 print(f"{' Tic Tac Toe 게임을 종료합니다. ':*^52}\n")

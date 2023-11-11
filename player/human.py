@@ -12,6 +12,7 @@ class Human(Player):
 
         Args:
             available_moves: A set of integers for usable game moves.
+
         Returns:
             selected_move : The selected move.
         """
