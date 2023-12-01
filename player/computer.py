@@ -1,4 +1,5 @@
 import random
+import time
 
 from .base_player import Player
 
@@ -6,22 +7,16 @@ from .base_player import Player
 class Computer(Player):
     """A Computer player in the game."""
 
-    def select_move(self, available_moves: set[int]) -> int:
+    def select_move(self, available_moves: list[int]) -> int:
         """
-        Randomly select a move from the available options.
+        Randomly selects a move from the available options.
 
-        Note: The function modifies 'available_moves'.
+        Arg:
+            available_moves: Unoccupied positions in the current game state.
 
-        Args:
-            available_moves: A set of integers for usable game moves.
-
-        Returns:
-            selected_move : The selected move.
+        Return:
+            selected_move: The randomly selected position.
         """
-        # select random move
-        selected_move = random.choice(list(available_moves))
-
-        # remove chosen move from options
-        available_moves.remove(selected_move)
-
+        time.sleep(0.8)
+        selected_move = random.choice(available_moves)
         return selected_move

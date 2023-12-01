@@ -4,14 +4,14 @@ class Player:
     def __init__(self, name):
         self.name = name
 
-    def select_move(self, available_moves: set[int]) -> int:
+    def select_move(self, available_moves: list[int]) -> int:
         """
-        Select a move from the available options.
+        Selects a move from the available options.
 
-        Args:
-            available_moves: A set of integers for usable game moves.
+        Arg:
+            available_moves: Unoccupied positions in the current game state.
 
-        Returns:
-            int: The selected move.
+        Return:
+            The selected move.
         """
         ...
