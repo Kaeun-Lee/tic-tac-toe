@@ -2,18 +2,27 @@ import random
 from itertools import cycle
 
 from board import Board
-from player import Computer, Human
+from player import Computer, Human, Player
 
 
 class TicTacToeGame:
     """Represents a game of Tic Tac Toe."""
 
     def __init__(self) -> None:
+        self.player1, self.player2 = self.setup_players()
+        self.rounds_count = 1
+        self.board = Board()
+
+    def setup_players(self) -> tuple[Player, Player]:
+        """
+        Determines the order of play between two players.
+
+        Returns:
+            The first and second player in the shuffled order.
+        """
         players = [Human("player1"), Computer("computer")]
         random.shuffle(players)
-        self.first_player = players[0]
-        self.second_player = players[1]
-        self.rounds_count = 1
+        return players[0], players[1]
 
     def restart_game(self) -> bool:
         """
@@ -31,33 +40,26 @@ class TicTacToeGame:
                 print("잘못된 값을 입력했습니다. y/n 중 하나를 입력해 주세요.\n")
         return play_again == "y"
 
-    def play_one_round(self, board: Board) -> None:
-        """
-        Runs a game of Tic Tac Toe between two players.
-
-        Args:
-            board: The game board in this round.
-        """
+    def play_one_round(self) -> None:
+        """Runs a game of Tic Tac Toe between two players."""
         # Display initial game board
-        print(board)
+        print(self.board)
 
-        print(f"첫 번째 플레이어는 {self.first_player.name} (O)입니다.")
-        print(f"두 번째 플레이어는 {self.second_player.name} (X)입니다.\n")
+        print(f"첫 번째 플레이어는 {self.player1.name} (O)입니다.")
+        print(f"두 번째 플레이어는 {self.player2.name} (X)입니다.\n")
 
-        symbol_player_pairs = cycle(
-            [("O", self.first_player), ("X", self.second_player)]
-        )
+        symbol_player_pairs = cycle([("O", self.player1), ("X", self.player2)])
 
-        for _ in range(len(board._current_state)):
+        for _ in range(len(self.board._current_state)):
             symbol, current_player = next(symbol_player_pairs)
-            move = current_player.select_move(board.get_available_moves())
+            move = current_player.select_move(self.board.get_available_moves())
 
-            board.apply_turn(move, symbol)
+            self.board.apply_turn(move, symbol)
 
             # Updated game board
-            print(board)
+            print(self.board)
 
-            if board.is_finished():
+            if self.board.is_finished():
                 print(
                     f"{current_player.name}님 축하합니다!!! {current_player.name}님이 이겼습니다.\n"
                 )
@@ -80,19 +82,13 @@ class TicTacToeGame:
 
         print(f"{' Tic Tac Toe 게임을 시작합니다. ':*^52}\n")
 
-        # Initialize variables and start playing game
-        board = Board()
-
         while True:
             print(f'"Round {self.rounds_count}"\n')
-            self.play_one_round(board)
+            self.play_one_round()
             if self.restart_game():
                 self.rounds_count += 1
-                board.reset()
-                self.first_player, self.second_player = (
-                    self.second_player,
-                    self.first_player,
-                )
+                self.board.reset()
+                self.player1, self.player2 = self.player2, self.player1
             else:
                 break
         print(f"{' Tic Tac Toe 게임을 종료합니다. ':*^52}\n")
