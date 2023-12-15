@@ -10,6 +10,7 @@ class TicTacToeGame:
 
     def __init__(self) -> None:
         self.player1, self.player2 = self.setup_players()
+        self.first_player, self.second_player = self.player1, self.player2
         self.rounds_count = 1
         self.board = Board()
 
@@ -45,10 +46,12 @@ class TicTacToeGame:
         # Display initial game board
         print(self.board)
 
-        print(f"첫 번째 플레이어는 {self.player1.name} (O)입니다.")
-        print(f"두 번째 플레이어는 {self.player2.name} (X)입니다.\n")
+        print(f"첫 번째 플레이어는 {self.first_player.name} (O)입니다.")
+        print(f"두 번째 플레이어는 {self.second_player.name} (X)입니다.\n")
 
-        symbol_player_pairs = cycle([("O", self.player1), ("X", self.player2)])
+        symbol_player_pairs = cycle(
+            [("O", self.first_player), ("X", self.second_player)]
+        )
 
         for _ in range(len(self.board._current_state)):
             symbol, current_player = next(symbol_player_pairs)
@@ -63,6 +66,7 @@ class TicTacToeGame:
                 print(
                     f"{current_player.name}님 축하합니다!!! {current_player.name}님이 이겼습니다.\n"
                 )
+                current_player.wins += 1
                 return
         # Board is full, draw game
         print("비겼습니다. 게임을 다시 시작해 보세요.\n")
@@ -84,11 +88,18 @@ class TicTacToeGame:
 
         while True:
             print(f'"Round {self.rounds_count}"\n')
+
             self.play_one_round()
+            print(f"| {f'{self.player1.name} vs. {self.player2.name}':^20} |")
+            print(f"| {f'{self.player1.wins} 승        {self.player2.wins} 승':^18} |\n")
+
             if self.restart_game():
                 self.rounds_count += 1
                 self.board.reset()
-                self.player1, self.player2 = self.player2, self.player1
+                self.first_player, self.second_player = (
+                    self.second_player,
+                    self.first_player,
+                )
             else:
                 break
         print(f"{' Tic Tac Toe 게임을 종료합니다. ':*^52}\n")

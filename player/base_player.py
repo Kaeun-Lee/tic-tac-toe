@@ -3,6 +3,7 @@ class Player:
 
     def __init__(self, name):
         self.name = name
+        self.wins = 0
 
     def select_move(self, available_moves: list[int]) -> int:
         """
