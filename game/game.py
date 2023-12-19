@@ -10,7 +10,6 @@ class TicTacToeGame:
 
     def __init__(self) -> None:
         self.player1, self.player2 = self.setup_players()
-        self.first_player, self.second_player = self.player1, self.player2
         self.rounds_count = 1
         self.board = Board()
 
@@ -41,17 +40,21 @@ class TicTacToeGame:
                 print("잘못된 값을 입력했습니다. y/n 중 하나를 입력해 주세요.\n")
         return play_again == "y"
 
-    def play_one_round(self) -> None:
-        """Runs a game of Tic Tac Toe between two players."""
+    def play_one_round(self, first_player: Player, second_player: Player) -> None:
+        """
+        Runs a game of Tic Tac Toe between two players.
+
+        Args:
+            first_player: The first player in this round.
+            second_player: The second player in this round.
+        """
         # Display initial game board
         print(self.board)
 
-        print(f"첫 번째 플레이어는 {self.first_player.name} (O)입니다.")
-        print(f"두 번째 플레이어는 {self.second_player.name} (X)입니다.\n")
+        print(f"첫 번째 플레이어는 {first_player.name} (O)입니다.")
+        print(f"두 번째 플레이어는 {second_player.name} (X)입니다.\n")
 
-        symbol_player_pairs = cycle(
-            [("O", self.first_player), ("X", self.second_player)]
-        )
+        symbol_player_pairs = cycle([("O", first_player), ("X", second_player)])
 
         for _ in range(len(self.board._current_state)):
             symbol, current_player = next(symbol_player_pairs)
@@ -85,21 +88,19 @@ class TicTacToeGame:
         )
 
         print(f"{' Tic Tac Toe 게임을 시작합니다. ':*^52}\n")
+        first_player, second_player = self.player1, self.player2
 
         while True:
             print(f'"Round {self.rounds_count}"\n')
 
-            self.play_one_round()
+            self.play_one_round(first_player, second_player)
             print(f"| {f'{self.player1.name} vs. {self.player2.name}':^20} |")
             print(f"| {f'{self.player1.wins} 승        {self.player2.wins} 승':^18} |\n")
 
             if self.restart_game():
                 self.rounds_count += 1
                 self.board.reset()
-                self.first_player, self.second_player = (
-                    self.second_player,
-                    self.first_player,
-                )
+                first_player, second_player = second_player, first_player
             else:
                 break
         print(f"{' Tic Tac Toe 게임을 종료합니다. ':*^52}\n")
