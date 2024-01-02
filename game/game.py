@@ -9,9 +9,44 @@ class TicTacToeGame:
     """Represents a game of Tic Tac Toe."""
 
     def __init__(self) -> None:
-        self.player1, self.player2 = Human("player1"), Computer("computer")
+        self.game_mode = self.select_game_mode()
+        self.player1, self.player2 = self.set_players(self.game_mode)
         self.rounds_count = 1
         self.board = Board()
+
+    def select_game_mode(self) -> int:
+        """
+        Prompts the user to select a game mode.
+
+        Return:
+            num_of_players: The game mode chosen by the user.
+        """
+        while True:
+            try:
+                num_of_players = int(
+                    input("게임 모드를 선택해 주세요.\n(1) 1 PLAYER\n(2) 2 PLAYERS\n")
+                )
+                print()
+            except ValueError:
+                print("숫자를 입력해 주세요.\n")
+            else:
+                if num_of_players in [1, 2]:
+                    return num_of_players
+                else:
+                    print("숫자 1과 2중 하나를 골라주세요.\n")
+
+    def set_players(self, game_mode: int) -> tuple[Player, Player]:
+        """
+        Configures players depending on the game mode.
+
+        Returns:
+            The two Player objects.
+        """
+        if game_mode == 1:
+            players = [Human("Player"), Computer("Computer")]
+        else:
+            players = [Human("Player 1"), Human("Player 2")]
+        return players[0], players[1]
 
     def restart_game(self) -> bool:
         """
@@ -70,14 +105,14 @@ class TicTacToeGame:
 
         # Initial welcome message
         print("#" * 60)
-        print(f"{'Tic Tac Toe 게임에 오신 걸 환영합니다!':^50}")
-        print("#" * 60)
-        print(
-            """
-        게임 방식을 선택해 주세요.
-        (1) 1 PLAYER
-        (2) 2 PLAYER\n"""
-        )
+        print(f"{'Tic Tac Toe 게임에 오신 걸 환영합니다!':^50}\n")
+        print("#" * 60, end="\n\n\n")
+        # print(
+        #     """
+        # 게임 방식을 선택해 주세요.
+        # (1) 1 PLAYER
+        # (2) 2 PLAYER\n"""
+        # )
         print(f"{' Tic Tac Toe 게임을 시작합니다. ':*^52}\n")
 
         # Randomly select player order
