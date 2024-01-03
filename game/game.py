@@ -1,3 +1,4 @@
+import argparse
 import random
 from itertools import cycle
 
@@ -9,41 +10,58 @@ class TicTacToeGame:
     """Represents a game of Tic Tac Toe."""
 
     def __init__(self) -> None:
-        self.game_mode = self.select_game_mode()
-        self.player1, self.player2 = self.set_players(self.game_mode)
+        # Initial welcome message
+        print("#" * 60)
+        print(f"{'Tic Tac Toe 게임에 오신 걸 환영합니다!':^50}")
+        print("#" * 60, end="\n\n")
+
+        parser = argparse.ArgumentParser(
+            description="Set the number of players for the game."
+        )
+        parser.add_argument(
+            "--num_players", type=int, required=True, help="number of players"
+        )
+        args = parser.parse_args()
+
+        self.num_players = args.num_players
+        self.player1, self.player2 = self.set_players(self.num_players)
         self.rounds_count = 1
         self.board = Board()
 
-    def select_game_mode(self) -> int:
+    def select_num_players(self) -> int:
         """
-        Prompts the user to select a game mode.
+        Prompts the user to select the number of players.
 
         Return:
-            num_of_players: The game mode chosen by the user.
+            num_players: The number of players chosen by the user.
         """
+        player_selection_msg = """플레이어 수를 선택해 주세요.
+        (1) 1 PLAYER
+        (2) 2 PLAYERS\n"""
         while True:
             try:
-                num_of_players = int(
-                    input("게임 모드를 선택해 주세요.\n(1) 1 PLAYER\n(2) 2 PLAYERS\n")
-                )
+                num_players = int(input(f"{player_selection_msg:^75}"))
                 print()
             except ValueError:
                 print("숫자를 입력해 주세요.\n")
             else:
-                if num_of_players in [1, 2]:
-                    return num_of_players
+                if num_players in [1, 2]:
+                    return num_players
                 else:
                     print("숫자 1과 2중 하나를 골라주세요.\n")
 
-    def set_players(self, game_mode: int) -> tuple[Player, Player]:
+    def set_players(self, num_players: int) -> tuple[Player, Player]:
         """
-        Configures players depending on the game mode.
+        Sets up players based on the number of players.
+
+        Arg:
+            num_players: The number of players chosen by the user.
 
         Returns:
             The two Player objects.
         """
-        if game_mode == 1:
-            players = [Human("Player"), Computer("Computer")]
+        if num_players == 1:
+            players = [Human("Player 1"), Computer("Computer")]
         else:
             players = [Human("Player 1"), Human("Player 2")]
         return players[0], players[1]
@@ -102,17 +120,6 @@ class TicTacToeGame:
 
     def run(self):
         """Executes the Tic Tac Toe Game."""
-
-        # Initial welcome message
-        print("#" * 60)
-        print(f"{'Tic Tac Toe 게임에 오신 걸 환영합니다!':^50}\n")
-        print("#" * 60, end="\n\n\n")
-        # print(
-        #     """
-        # 게임 방식을 선택해 주세요.
-        # (1) 1 PLAYER
-        # (2) 2 PLAYER\n"""
-        # )
         print(f"{' Tic Tac Toe 게임을 시작합니다. ':*^52}\n")
 
         # Randomly select player order
@@ -125,7 +132,7 @@ class TicTacToeGame:
 
             # Display current score
             print(f"| {f'{self.player1.name} vs. {self.player2.name}':^20} |")
-            print(f"| {f'{self.player1.wins} 승        {self.player2.wins} 승':^18} |\n")
+            print(f"| {f'{self.player1.wins} 승':^9} {f'{self.player2.wins} 승':^9} |\n")
 
             if self.restart_game():
                 # Prepare for next round: reset board and switch player order
