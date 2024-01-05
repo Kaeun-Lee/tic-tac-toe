@@ -1,4 +1,3 @@
-import argparse
 import random
 from itertools import cycle
 
@@ -9,46 +8,10 @@ from player import Computer, Human, Player
 class TicTacToeGame:
     """Represents a game of Tic Tac Toe."""
 
-    def __init__(self) -> None:
-        # Initial welcome message
-        print("#" * 60)
-        print(f"{'Tic Tac Toe 게임에 오신 걸 환영합니다!':^50}")
-        print("#" * 60, end="\n\n")
-
-        parser = argparse.ArgumentParser(
-            description="Set the number of players for the game."
-        )
-        parser.add_argument(
-            "--num_players", type=int, required=True, help="number of players"
-        )
-        args = parser.parse_args()
-
-        self.num_players = args.num_players
-        self.player1, self.player2 = self.set_players(self.num_players)
+    def __init__(self, num_players) -> None:
+        self.player1, self.player2 = self.set_players(num_players)
         self.rounds_count = 1
         self.board = Board()
-
-    def select_num_players(self) -> int:
-        """
-        Prompts the user to select the number of players.
-
-        Return:
-            num_players: The number of players chosen by the user.
-        """
-        player_selection_msg = """플레이어 수를 선택해 주세요.
-        (1) 1 PLAYER
-        (2) 2 PLAYERS\n"""
-        while True:
-            try:
-                num_players = int(input(f"{player_selection_msg:^75}"))
-                print()
-            except ValueError:
-                print("숫자를 입력해 주세요.\n")
-            else:
-                if num_players in [1, 2]:
-                    return num_players
-                else:
-                    print("숫자 1과 2중 하나를 골라주세요.\n")
 
     def set_players(self, num_players: int) -> tuple[Player, Player]:
         """
@@ -120,6 +83,10 @@ class TicTacToeGame:
 
     def run(self):
         """Executes the Tic Tac Toe Game."""
+        # Initial welcome message
+        print("#" * 60)
+        print(f"{'Tic Tac Toe 게임에 오신 걸 환영합니다!':^50}")
+        print("#" * 60, end="\n\n")
         print(f"{' Tic Tac Toe 게임을 시작합니다. ':*^52}\n")
 
         # Randomly select player order
