@@ -1,7 +1,6 @@
 class Player:
-    """A player choosing from available game moves."""
-
     def __init__(self, name):
+        """A player choosing from available game moves."""
         self.name = name
         self.wins = 0
 

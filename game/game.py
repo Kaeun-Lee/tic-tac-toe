@@ -6,9 +6,13 @@ from player import Computer, Human, Player
 
 
 class TicTacToeGame:
-    """Represents a game of Tic Tac Toe."""
+    def __init__(self, num_players: int) -> None:
+        """
+        Represents a game of Tic Tac Toe.
 
-    def __init__(self, num_players) -> None:
+        Arg:
+            num_players: The number of players chosen by the user.
+        """
         self.player1, self.player2 = self.set_players(num_players)
         self.rounds_count = 1
         self.board = Board()

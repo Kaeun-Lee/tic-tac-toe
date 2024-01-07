@@ -2,9 +2,9 @@ import numpy as np
 
 
 class Board:
-    """A Tic Tac Toe game board with methods for game progress and status check."""
-
     def __init__(self) -> None:
+        """A Tic Tac Toe game board with methods for game progress and status check."""
+
         self._current_state = np.array(range(1, 10), dtype=object)
 
         # Winning patterns
