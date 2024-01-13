@@ -1,5 +1,6 @@
-from game import TicTacToeGame
 import argparse
+
+from game import TicTacToeGame
 
 
 def get_args() -> argparse.Namespace:
@@ -18,12 +19,19 @@ def get_args() -> argparse.Namespace:
         default=1,
         help="Set the number of players for the game.",
     )
+    parser.add_argument(
+        "--language",
+        type=str,
+        default="ko",
+        help="Choose the language version for the game. 'en' for English, 'ko' for Korean.",
+    )
     args = parser.parse_args()
     return args
 
 
 def main() -> None:
-    game = TicTacToeGame(get_args().num_players)
+    args = get_args()
+    game = TicTacToeGame(args.num_players, args.language)
     game.run()
 
 
