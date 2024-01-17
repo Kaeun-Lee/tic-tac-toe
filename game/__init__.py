@@ -1,1 +1,1 @@
-from .game import TicTacToeGame
+from .game import Game

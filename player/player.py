@@ -1,4 +1,4 @@
-from localization import MessageFactory
+from message import Message
 
 
 class Player:
@@ -7,17 +7,15 @@ class Player:
         self.name = name
         self.wins = 0
 
-    def select_move(
-        self, available_moves: list[int], msg_factory: MessageFactory
-    ) -> int:
+    def select_move(self, available_moves: list[int], message: Message) -> int:
         """
         Selects a move from the available options.
 
         Args:
             available_moves: Unoccupied positions in the current game state.
-            msg_factory: A MessageFactory object for generating game messages.
+            message: Message object for generating game messages.
 
         Return:
-            The selected move.
+            selected move.
         """
         ...

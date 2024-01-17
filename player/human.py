@@ -1,38 +1,36 @@
-from localization import MessageFactory
+from message import Message
 
-from .base_player import Player
+from .player import Player
 
 
 class Human(Player):
-    """A Human player in the game."""
+    """Human player in the game."""
 
-    def select_move(
-        self, available_moves: list[int], msg_factory: MessageFactory
-    ) -> int:
+    def select_move(self, available_moves: list[int], message: Message) -> int:
         """
         Prompts the user to select a move from the available options.
 
         Args:
             available_moves: Unoccupied positions in the current game state.
-            msg_factory: A MessageFactory object for generating game messages.
+            message: Message object for generating game messages.
 
         Return:
-            selected_move: The user-selected position.
+            selected_move: User-selected position.
         """
         while True:
             try:
                 # Get user input
                 selected_move = int(
-                    input(msg_factory.current_language.get_move_query(self.name))
+                    input(message.current_language.get_move_query(self.name))
                 )
                 print()
             except ValueError:
                 # Non-integer input
-                print(msg_factory.current_language.invalid_position)
+                print(message.current_language.invalid_position)
             else:
                 # Check if valid move
                 if selected_move in available_moves:
                     return selected_move
                 else:
-                    print(msg_factory.current_language.invalid_position_range)
-                    print(msg_factory.current_language.reselect_position)
+                    print(message.current_language.invalid_position_range)
+                    print(message.current_language.reselect_position)

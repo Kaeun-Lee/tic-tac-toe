@@ -3,7 +3,7 @@ import numpy as np
 
 class Board:
     def __init__(self) -> None:
-        """A Tic Tac Toe game board with methods for game progress and status check."""
+        """Tic Tac Toe game board with methods for game progress and status check."""
 
         self._current_state = np.array(range(1, 10), dtype=object)
 
@@ -24,7 +24,7 @@ class Board:
         Formats the game board into a displayable string.
 
         Return:
-            current_state: A string representation of the game board.
+            Representation of the game board.
         """
         current_state = "\n".join(
             f"{' | '.join(map(str, self._current_state[i : i + 3])):^24}"
@@ -77,7 +77,7 @@ class Board:
         Apply a player's move to the board.
 
         Args:
-            move: The board position that was just selected (1 ~ 9).
-            symbol: The symbol that was just played ('O' or 'X').
+            move: Board position just selected (1 ~ 9).
+            symbol: Symbol just played ('O' or 'X').
         """
         self._current_state[move - 1] = symbol

@@ -1,37 +1,41 @@
 import argparse
 
-from game import TicTacToeGame
+from game import Game
 
 
-def get_args() -> argparse.Namespace:
+def get_arguments() -> argparse.Namespace:
     """
     Parse command line arguments.
 
     Return:
-        args: The namespace containing user-defined arguments.
+        args: Namespace containing user-defined arguments.
     """
     parser = argparse.ArgumentParser(
         description="Configure the settings for the Tic Tac Toe game"
     )
     parser.add_argument(
+        "-n",
         "--num_players",
         type=int,
+        choices=[1, 2],
         default=1,
-        help="Set the number of players for the game.",
+        help="set the number of players for the game",
     )
     parser.add_argument(
+        "-l",
         "--language",
         type=str,
+        choices=["en", "ko"],
         default="ko",
-        help="Choose the language version for the game. 'en' for English, 'ko' for Korean.",
+        help="choose the language version for the game.'en' for English, 'ko' for Korean",
     )
     args = parser.parse_args()
     return args
 
 
 def main() -> None:
-    args = get_args()
-    game = TicTacToeGame(args.num_players, args.language)
+    args = get_arguments()
+    game = Game(args.num_players, args.language)
     game.run()
 
 

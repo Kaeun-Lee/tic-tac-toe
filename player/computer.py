@@ -1,28 +1,25 @@
 import random
 import time
 
-from localization import MessageFactory
-
-from .base_player import Player
+from message import Message
+from .player import Player
 
 
 class Computer(Player):
-    """A Computer player in the game."""
+    """Computer player in the game."""
 
-    def select_move(
-        self, available_moves: list[int], msg_factory: MessageFactory
-    ) -> int:
+    def select_move(self, available_moves: list[int], message: Message) -> int:
         """
         Randomly selects a move from the available options.
 
         Args:
             available_moves: Unoccupied positions in the current game state.
-            msg_factory: A MessageFactory object for generating game messages.
+            message: Message object for generating game messages.
 
         Return:
-            selected_move: The randomly selected position.
+            selected_move: Randomly selected position.
         """
-        print(msg_factory.current_language.get_move_query(self.name))
+        print(message.current_language.get_move_query(self.name))
         print()
 
         time.sleep(1)
