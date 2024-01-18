@@ -1,4 +1,4 @@
-from message import Message
+from message import English, Korean
 
 
 class Player:
@@ -7,13 +7,13 @@ class Player:
         self.name = name
         self.wins = 0
 
-    def select_move(self, available_moves: list[int], message: Message) -> int:
+    def select_move(self, available_moves: list[int], message: English | Korean) -> int:
         """
         Selects a move from the available options.
 
         Args:
             available_moves: Unoccupied positions in the current game state.
-            message: Message object for generating game messages.
+            message: Object storing game messages.
 
         Return:
             selected move.

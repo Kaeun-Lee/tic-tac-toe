@@ -2,7 +2,7 @@ import random
 from itertools import cycle
 
 from board import Board
-from message import Message
+from message import English, Korean
 from player import Computer, Human, Player
 
 
@@ -18,7 +18,10 @@ class Game:
         self.player1, self.player2 = self.set_players(num_players)
         self.round = 1
         self.board = Board()
-        self.message = Message(language)
+        if language == "en":
+            self.message = English()
+        else:
+            self.message = Korean()
 
     def set_players(self, num_players: int) -> tuple[Player, Player]:
         """
@@ -43,12 +46,12 @@ class Game:
             True for restart, False otherwise.
         """
         while True:
-            play_again = input(self.message.current_language.replay_game)
+            play_again = input(self.message.replay_game)
             print()
             if play_again in ["y", "n"]:
                 break
             else:
-                print(self.message.current_language.invalid_yes_no)
+                print(self.message.invalid_yes_no)
         return play_again == "y"
 
     def play_one_round(self, first_player: Player, second_player: Player) -> None:
@@ -62,11 +65,7 @@ class Game:
         # Display initial game board
         print(self.board)
 
-        print(
-            self.message.current_language.get_players_intro(
-                first_player.name, second_player.name
-            )
-        )
+        print(self.message.get_players_intro(first_player.name, second_player.name))
 
         # Cycle through players and their symbols
         symbol_player_pairs = cycle([("O", first_player), ("X", second_player)])
@@ -84,29 +83,29 @@ class Game:
             print(self.board)
 
             if self.board.is_finished():
-                print(self.message.current_language.get_winner_message(current_player.name))
+                print(self.message.get_winner_message(current_player.name))
                 current_player.wins += 1
                 return
 
         # Board is full, draw game
-        print(self.message.current_language.draw_game)
+        print(self.message.draw_game)
 
     def run(self) -> None:
         """Executes the Tic Tac Toe Game."""
         # Initial welcome message
-        print(self.message.current_language.start_game)
+        print(self.message.start_game)
 
         # Randomly select player order
         first_player, second_player = random.sample([self.player1, self.player2], k=2)
 
         while True:
-            print(self.message.current_language.get_round_count(self.round))
+            print(self.message.get_round_count(self.round))
 
             self.play_one_round(first_player, second_player)
 
             # Display current score
             print(
-                self.message.current_language.get_scoreboard_message(
+                self.message.get_scoreboard_message(
                     self.player1.name,
                     self.player2.name,
                     self.player1.wins,
@@ -123,4 +122,4 @@ class Game:
                 break
 
         # Goodbye message
-        print(self.message.current_language.end_game)
+        print(self.message.end_game)
