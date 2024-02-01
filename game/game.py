@@ -46,12 +46,12 @@ class Game:
             True for restart, False otherwise.
         """
         while True:
-            play_again = input(self.message.replay_game)
+            play_again = input(self.message.get_replay_game_message())
             print()
             if play_again in ["y", "n"]:
                 break
             else:
-                print(self.message.invalid_yes_no)
+                print(self.message.get_invalid_yes_no_message())
         return play_again == "y"
 
     def play_one_round(self, first_player: Player, second_player: Player) -> None:
@@ -88,12 +88,12 @@ class Game:
                 return
 
         # Board is full, draw game
-        print(self.message.draw_game)
+        print(self.message.get_start_game_message())
 
     def run(self) -> None:
         """Executes the Tic Tac Toe Game."""
         # Initial welcome message
-        print(self.message.start_game)
+        print(self.message.get_start_game_message())
 
         # Randomly select player order
         first_player, second_player = random.sample([self.player1, self.player2], k=2)
@@ -122,4 +122,4 @@ class Game:
                 break
 
         # Goodbye message
-        print(self.message.end_game)
+        print(self.message.get_end_game_message())

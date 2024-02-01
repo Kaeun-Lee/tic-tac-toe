@@ -1,55 +1,48 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 
-class Message:
-    def __init__(self) -> None:
-        """Generates game messages."""
-        self.start_game = self.get_start_game_message()
-        self.end_game = self.get_end_game_message()
-        self.draw_game = self.get_draw_game_message()
-        self.replay_game = self.get_replay_game_message()
-        self.invalid_yes_no = self.get_invalid_yes_no_message()
-        self.invalid_position = self.get_invalid_position_message()
-        self.invalid_position_range = self.get_invalid_position_range_message()
-        self.reselect_position = self.get_reselect_position_message()
+class Message(ABC):
+    """Generates game messages."""
 
     @abstractmethod
     def get_start_game_message(self) -> str:
         """
-        Generates the start game message.
+        Generates the start game message at the beginning of the game.
 
         Return:
-            Start game message.
+            Message that indicates the start of the game.
         """
         ...
 
     @abstractmethod
     def get_end_game_message(self) -> str:
         """
-        Generates the end game message.
+        Generates the end game message at the end of the game.
 
         Return:
-            End game message.
+            Message that indicates the end of the game.
         """
         ...
 
     @abstractmethod
     def get_draw_game_message(self) -> str:
         """
-        Generates the draw game message.
+        Generates the draw game message when all positions on the board are filled and no player has won.
 
         Return:
-            Draw game message.
+            Message that informs players of the draw and suggests a new game.
         """
         ...
 
     @abstractmethod
     def get_replay_game_message(self) -> str:
         """
-        Generates a replay query message.
+        Generates a replay query message when one round is over.
+
+        Will ask yes or no question if the user wants to play another round.
 
         Return:
-            Prompt for replay.
+            Message that requests a decision on replay.
         """
         ...
 
@@ -58,28 +51,32 @@ class Message:
         """
         Generates an error message for invalid 'yes' or 'no' responses.
 
+        Informs the user they have provided an invalid input when a 'yes' or 'no' response was expected.
+
         Return:
-            Error message for invalid responses.
+            Error message for invalid 'yes' or 'no' inputs.
         """
         ...
 
     @abstractmethod
     def get_invalid_position_message(self) -> str:
         """
-        Generates an error message for invalid position input.
+        Generates an error message for an invalid position input.
+
+        Informs the user that the input they have provided does not correspond to a valid position on the game board.
 
         Return:
-            Error message for invalid position.
+            Error message for invalid position input.
         """
         ...
 
     @abstractmethod
     def get_invalid_position_range_message(self) -> str:
         """
-        Generates an error message for out-of-range position input.
+        Generates an error message when a position input is out of the valid range.
 
         Return:
-            Error message for out-of-range position.
+            Error message for a position that is out of range.
         """
         ...
 
@@ -89,60 +86,62 @@ class Message:
         Generates a message to reselect position.
 
         Return:
-            Position reselection message.
+            Message that asks for position reselection.
         """
         ...
 
     @abstractmethod
     def get_round_count(self, round: int) -> str:
         """
-        Generates a round count message.
+        Generates a message displaying the current round number.
+
+        Informs users about the current round at the beginning of each round.
 
         Arg:
             round: Current round number.
 
         Return:
-            Current round number message.
+            Message that indicates the current round number.
         """
         ...
 
     @abstractmethod
     def get_players_intro(self, first_player: str, second_player: str) -> str:
         """
-        Generates the introductory information message for the players.
+        Generates the introductory information message for the players at the beginning of the game.
 
         Args:
             first_player: Name of the first player.
             second_player: Name of the second player.
 
         Return:
-            Introductory message for the current players.
+            Message that introduces the first and second player.
         """
         ...
 
     @abstractmethod
     def get_move_query(self, player_name: str) -> str:
         """
-        Generates move query for current player.
+        Generates move query when it's the player's turn.
 
         Arg:
             player_name: Name of the current player.
 
         Return:
-            Prompt for player's move location.
+            Message that asks for the player's move location.
         """
         ...
 
     @abstractmethod
     def get_winner_message(self, winner_name: str) -> str:
         """
-        Generates a winning message.
+        Generates a winning message when a player has won the game.
 
         Arg:
             winner_name: Name of the winner.
 
         Return:
-            Congratulatory message for the winner.
+            Message that congratulates the winner.
         """
         ...
 
@@ -151,7 +150,7 @@ class Message:
         self, player1_name: str, player2_name: str, player1_wins: int, player2_wins: int
     ) -> str:
         """
-        Generates a game score message.
+        Generates a game score message after each round to inform players about the current score.
 
         Args:
             player1_name: Name of one player.
@@ -160,6 +159,6 @@ class Message:
             player2_wins: Number of wins for the player2.
 
         Return:
-            Current game score message.
+            Message that displays the current game score.
         """
         ...

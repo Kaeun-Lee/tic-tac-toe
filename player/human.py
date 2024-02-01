@@ -24,11 +24,11 @@ class Human(Player):
                 print()
             except ValueError:
                 # Non-integer input
-                print(message.invalid_position)
+                print(message.get_invalid_position_message())
             else:
                 # Check if valid move
                 if selected_move in available_moves:
                     return selected_move
                 else:
-                    print(message.invalid_position_range)
-                    print(message.reselect_position)
+                    print(message.get_invalid_position_range_message())
+                    print(message.get_reselect_position_message())
