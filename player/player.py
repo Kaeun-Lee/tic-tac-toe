@@ -1,4 +1,4 @@
-from message import English, Korean
+from message import Message
 
 
 class Player:
@@ -7,7 +7,7 @@ class Player:
         self.name = name
         self.wins = 0
 
-    def select_move(self, available_moves: list[int], message: English | Korean) -> int:
+    def select_move(self, available_moves: list[int], message: Message) -> int:
         """
         Selects a move from the available options.
 

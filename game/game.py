@@ -2,7 +2,7 @@ import random
 from itertools import cycle
 
 from board import Board
-from message import English, Korean
+from message import Message
 from player import Computer, Human, Player
 
 
@@ -18,10 +18,7 @@ class Game:
         self.player1, self.player2 = self.set_players(num_players)
         self.round = 1
         self.board = Board()
-        if language == "en":
-            self.message = English()
-        else:
-            self.message = Korean()
+        self.message = Message(language)
 
     def set_players(self, num_players: int) -> tuple[Player, Player]:
         """
@@ -88,7 +85,7 @@ class Game:
                 return
 
         # Board is full, draw game
-        print(self.message.get_start_game_message())
+        print(self.message.get_draw_game_message())
 
     def run(self) -> None:
         """Executes the Tic Tac Toe Game."""

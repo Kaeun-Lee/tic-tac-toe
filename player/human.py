@@ -1,4 +1,4 @@
-from message import English, Korean
+from message import Message
 
 from .player import Player
 
@@ -6,7 +6,7 @@ from .player import Player
 class Human(Player):
     """Human player in the game."""
 
-    def select_move(self, available_moves: list[int], message: English | Korean) -> int:
+    def select_move(self, available_moves: list[int], message: Message) -> int:
         """
         Prompts the user to select a move from the available options.
 

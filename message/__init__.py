@@ -1,2 +1,1 @@
-from .english import English
-from .korean import Korean
+from .message import Message
