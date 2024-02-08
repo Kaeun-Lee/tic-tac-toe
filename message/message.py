@@ -1,28 +1,25 @@
-from message import language_dict
+from message import language_support
 
 
 class Message:
-    """Generates game messages."""
+    def __init__(self, language: str, formatting: list[int]) -> None:
+        """
+        Generates game messages.
 
-    def __init__(self, language) -> None:
-        self.start_border_length = 60
+        Args:
+            language: Language code for the game messages (e.g., 'en', 'ko').
+            formatting: Formatting length and widths for messages.
+        """
+        (
+            self.line_width,
+            self.name_display_width,
+            self.score_display_width,
+        ) = formatting
 
         if language == "en":
-            self.language_settings = language_dict.english
-            self.welcome_message_formatting_width = 60
-            self.start_message_formatting_width = 60
-            self.end_message_formatting_width = 60
-            self.scoreboard_name_formatting_width = 20
-            self.scoreboard_player1_formatting_width = 10
-            self.scoreboard_player2_formatting_width = 10
+            self.language_settings = language_support.english
         else:
-            self.language_settings = language_dict.korean
-            self.welcome_message_formatting_width = 50
-            self.start_message_formatting_width = 52
-            self.end_message_formatting_width = 52
-            self.scoreboard_name_formatting_width = 20
-            self.scoreboard_player1_formatting_width = 9
-            self.scoreboard_player2_formatting_width = 9
+            self.language_settings = language_support.korean
 
     def get_start_game_message(self) -> str:
         """
@@ -31,14 +28,11 @@ class Message:
         Return:
             Message that indicates the start of the game.
         """
-        border_line = "#" * self.start_border_length
+        border_line = "#" * self.line_width
         welcome_message = self.language_settings["welcome message"].center(
-            self.welcome_message_formatting_width
+            self.line_width
         )
-        start_message = self.language_settings["start message"].center(
-            self.start_message_formatting_width
-        )
-
+        start_message = self.language_settings["start message"].center(self.line_width)
         return (
             f"{border_line}\n\n{welcome_message}\n\n{border_line}\n\n{start_message}\n"
         )
@@ -50,9 +44,7 @@ class Message:
         Return:
             Message that indicates the end of the game.
         """
-        end_message = self.language_settings["end message"].center(
-            self.end_message_formatting_width, "*"
-        )
+        end_message = self.language_settings["end message"].center(self.line_width, "*")
         return f"{end_message}\n"
 
     def get_draw_game_message(self) -> str:
@@ -131,17 +123,15 @@ class Message:
         Return:
             Message that displays the current game score.
         """
-        name = f"{player1_name} vs. {player2_name}".center(
-            self.scoreboard_name_formatting_width
-        )
+        name = f"{player1_name} vs. {player2_name}".center(self.name_display_width)
         player1 = (
             f"{player1_wins} {self.language_settings['scoreboard message']}".center(
-                self.scoreboard_player1_formatting_width
+                self.score_display_width
             )
         )
         player2 = (
             f"{player2_wins} {self.language_settings['scoreboard message']}".center(
-                self.scoreboard_player2_formatting_width
+                self.score_display_width
             )
         )
         return f"| {name} |\n| {player1} {player2} |\n"

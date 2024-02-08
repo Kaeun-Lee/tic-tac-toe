@@ -7,18 +7,19 @@ from player import Computer, Human, Player
 
 
 class Game:
-    def __init__(self, num_players: int, language: str) -> None:
+    def __init__(self, num_players: int, language: str, formatting: list[int]) -> None:
         """
         Represents a game of Tic Tac Toe.
 
         Args:
             num_players: Number of players chosen by the user.
             language: Language code for the game messages (e.g., 'en', 'ko').
+            formatting: Formatting length and widths for messages.
         """
         self.player1, self.player2 = self.set_players(num_players)
         self.round = 1
         self.board = Board()
-        self.message = Message(language)
+        self.message = Message(language, formatting)
 
     def set_players(self, num_players: int) -> tuple[Player, Player]:
         """

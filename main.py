@@ -19,7 +19,7 @@ def get_arguments() -> argparse.Namespace:
         type=int,
         choices=[1, 2],
         default=1,
-        help="set the number of players for the game",
+        help="Set the number of players for the game",
     )
     parser.add_argument(
         "-l",
@@ -27,7 +27,15 @@ def get_arguments() -> argparse.Namespace:
         type=str,
         choices=["en", "ko"],
         default="ko",
-        help="choose the language version for the game.'en' for English, 'ko' for Korean",
+        help="Choose the language version for the game.'en' for English, 'ko' for Korean",
+    )
+    parser.add_argument(
+        "-f",
+        "--formatting",
+        type=int,
+        nargs="*",
+        default=None,
+        help="Customize formatting widths for messages: [line_width, name_display_width, score_display_width]",
     )
     args = parser.parse_args()
     return args
@@ -35,7 +43,9 @@ def get_arguments() -> argparse.Namespace:
 
 def main() -> None:
     args = get_arguments()
-    game = Game(args.num_players, args.language)
+    if args.formatting == None:
+        args.formatting = [60, 20, 10]
+    game = Game(args.num_players, args.language, args.formatting)
     game.run()
 
 
